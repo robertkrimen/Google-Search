@@ -7,8 +7,11 @@ dist:
 	perl Makefile.PL
 	$(MAKE) -f Makefile dist
 
-distclean test tardist: Makefile
+distclean tardist: Makefile
 	$(MAKE) -f $< $@
+
+test: Makefile
+	TEST_RELEASE=1 $(MAKE) -f $< $@
 
 Makefile: Makefile.PL
 	perl $<

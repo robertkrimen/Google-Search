@@ -9,6 +9,10 @@ has response => qw/is ro required 1 lazy 1/, default => sub {
     my $self = shift;
     return $self->search->request(start => $self->start);
 };
+has http_response => qw/is ro isa HTTP::Response required 1 lazy 1/, default => sub {
+    my $self = shift;
+    return $self->response->http_response;
+};
 has start => qw/is ro required 1 isa Int/, default => sub {
     my $self = shift;
     return $self->number * $self->search->rsz_number;

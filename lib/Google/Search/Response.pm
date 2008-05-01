@@ -34,21 +34,21 @@ sub parse {
 
     my $response = $self->http_response;
 
-    return $self->_error(code => $response->code, message => $response->message) unless $response->is_success;
+    return $self->_error(http_response => $response, code => $response->code, message => $response->message) unless $response->is_success;
 
     my $content = $response->content;
     eval {
         $content = $self->{content} = decode_json $content;
     };
-    return $self->_error(code => -1, message => "Unable to JSON parse content") if $@;
+    return $self->_error(http_response => $response, code => -1, message => "Unable to JSON parse content") if $@;
 
-    return $self->_error(code => -1, message => "Unable to JSON parse content") unless $content;
+    return $self->_error(http_response => $response, code => -1, message => "Unable to JSON parse content") unless $content;
 
-    return $self->_error(code => $content->{responseStatus}, message => $content->{responseDetails}) unless $content->{responseStatus} eq 200;
+    return $self->_error(http_response => $response, code => $content->{responseStatus}, message => $content->{responseDetails}) unless $content->{responseStatus} eq 200;
 
-    return $self->_error(code => -1, message => "responseData is null") unless $self->responseData;
+    return $self->_error(http_response => $response, code => -1, message => "responseData is null") unless $self->responseData;
 
-    return $self->_error(code => -1, message => "responseData.results is null") unless $self->results;
+    return $self->_error(http_response => $response, code => -1, message => "responseData.results is null") unless $self->results;
 
     return 1;
 
