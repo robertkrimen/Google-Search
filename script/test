@@ -7,6 +7,7 @@ use warnings;
 use Google::Search;
 
 #my $search = Google::Search->new(q => "rock", service => "video");
+#my $search = Google::Search->Web(v => "1.0", q => "rock");
 my $search = Google::Search->Web(q => "rock");
 my $result = $search->first;
 while ($result) {

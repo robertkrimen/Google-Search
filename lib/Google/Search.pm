@@ -9,11 +9,11 @@ Google::Search - Interface to the Google AJAX Search API
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 SYNOPSIS
@@ -46,12 +46,12 @@ our $VERSION = '0.01';
     # The search below specifies the latitude and longitude:
     $search = Google::Search->Local(..., q => { q => "rock", sll => "33.823230,-116.512110" }, ...);
     
-
 =head1 DESCRIPTION
 
 Google::Search is an interface to the Google AJAX Search API (L<http://code.google.com/apis/ajaxsearch/>). 
 
-Currently, their API looks like it will get you the top 28 results for your search query.
+Currently, their API looks like it will fetch you the top 28 results for your search query.
+
 According to the Terms of Service, you need to sign up for an API key here: L<http://code.google.com/apis/ajaxsearch/signup.html>
 
 =cut
@@ -62,6 +62,7 @@ use Google::Search::Carp;
 use Google::Search::Response;
 use Google::Search::Page;
 use Google::Search::Result;
+use Google::Search::Error;
 use LWP::UserAgent;
 
 use constant SERVICE_URI => {
@@ -160,7 +161,7 @@ has uri => qw/is ro required 1 lazy 1 isa URI/, default => sub {
     return URI->new($self->uri_for_service($self->service));
 };
 has q => qw/is ro required 1/;
-has v => qw/is ro required 1 isa Str/, default => "1.0";
+has v => qw/is ro required 1 isa Str/, default => sub { "1.0" };
 has referer => qw/is ro isa Str/;
 has key => qw/is ro isa Str/;
 has rsz => qw/is ro required 1 isa Str default small/;
@@ -173,7 +174,7 @@ has rsz_number => qw/is ro required 1 isa Int/, default => sub {
 };
 has _page => qw/is ro required 1/, default => sub { [] };
 has _result => qw/is ro required 1/, default => sub { [] };
-has current => qw/is ro required 1 isa Google::Search::Result lazy 1/, default => sub {
+has current => qw/is ro required 1 lazy 1/, default => sub {
     return shift->first;
 };
 has error => qw/is rw/;
@@ -296,7 +297,7 @@ sub result {
 
 =head2 $search->all
 
-Returns a list of L<Google::Search::Result> for everything that Google will term for this query
+Returns L<Google::Search::Result> list which includes every result Google has returned for the query
 
 In scalar context an array reference is returned, a list otherwise
 
@@ -317,7 +318,7 @@ sub all {
 
 =head2 $search->match( <code> )
 
-Returns L<Google::Search::Result> list
+Returns a L<Google::Search::Result> list
 
 This method will iterate through each result in the search, passing the result to <code> as the first argument.
 If <code> returns true, then the result will be included in the returned list
@@ -362,9 +363,17 @@ sub first_match {
     return undef;
 }
 
+$_->meta->make_immutable for qw/
+    Google::Search
+    Google::Search::Response
+    Google::Search::Page
+    Google::Search::Result
+    Google::Search::Error
+/;
+
 =head2 $search->error
 
-Returns a L<Google::Search::Error> if there was an error with the latest search
+Returns a L<Google::Search::Error> if there was an error with the last search
 
 If you receive undef from a result access then you can use this routine to see if there was a problem
 
@@ -385,7 +394,7 @@ Robert Krimen, C<< <rkrimen at cpan.org> >>
 
 =head1 SEE ALSO
 
-L<Search::Google>
+L<REST::Google::Search>
 
 =head1 BUGS
 

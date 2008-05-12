@@ -10,10 +10,14 @@ An object represting a result from a Google search (via L<Google::Search>)
 
 =head1 METHODS
 
-There are a variety of accessors available for each result depending which
-service you are searching under
+There are a variety of property accessors associated with each result depending which
+service you use (web, blog, news, local, etc.)
 
 For more information, see L<http://code.google.com/apis/ajaxsearch/documentation/reference.html#_intro_GResult>
+
+For example, a local result has C<lat> accessor and C<lng> accessor:
+
+    print $result->uri, " ", $result->title, " at ", $result->lat, " ", $result->lng, "\n";
 
 =head2 $result->uri
 
@@ -21,7 +25,11 @@ A L<URI> object best representing the location of the result
 
 =head2 $result->title
 
+"Supplies the title value of the result"
+
 =head2 $result->titleNoFormatting
+
+"Supplies the title, but unlike .title, this property is stripped of html markup (e.g., <b>, <i>, etc.)"
 
 =head2 $result->number
 
@@ -37,7 +45,9 @@ The next result after $result or undef if after the last
 
 =head2 $result->GsearchResultClass
 
-The result class, as given by Google
+"Indicates the "type" of result"
+
+The result class as given by Google
 
 =cut
 
