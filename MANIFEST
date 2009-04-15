@@ -4,7 +4,6 @@ META.yml # Will be created by "make dist"
 Makefile.PL
 README
 lib/Google/Search.pm
-t/00-load.t
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
@@ -22,8 +21,10 @@ lib/Google/Search/Page.pm
 lib/Google/Search/Response.pm
 lib/Google/Search/Result.pm
 script/test
+script/bug45061
+t/00-load.t
 t/01-basic.t
-t/author/boilerplate.t
-t/author/pod-coverage.t
-t/author/pod.t
+t/release/boilerplate.t
+t/release/pod-coverage.t
+t/release/pod.t
 
