@@ -3,17 +3,38 @@ use inc::Module::Install;
 name 'Google-Search';
 all_from 'lib/Google/Search.pm';
 
-build_requires 'Test::More';
+resources repository => 'http://github.com/robertkrimen/google-search/tree/master';
 
-for (split m/\n/, <<_END_) {
+{
+    require ExtUtils::MakeMaker;
+    use strict;
+    no strict 'refs';
+
+    my $libscan = \&{"ExtUtils::MM_Any::libscan"};
+    *{"ExtUtils::MM_Any::libscan"} = sub {
+        return '' unless $libscan->(@_);
+        return '' if $_[1] =~ /\.sw[p-z]$/;
+        return $_[1];
+    };
+}
+
+{
+    map { my ($pk, $vr) = split m/\s/; build_requires $pk => $vr || 0 } grep { ! /^\s*#/ } split m/\n/, <<_END_;
+Test::Most
+_END_
+
+    map { my ($pk, $vr) = split m/\s/; requires $pk => $vr || 0 } grep { ! /^\s*#/ } split m/\n/, <<_END_;
 Carp::Clan::Share
 JSON 2
 LWP::UserAgent
 Moose
 URI
 _END_
-    my ($module, $version) = split m/\s+/, $_;
-    requires $module, $version;
+}
+
+if (-e 'inc/.author') {
+    my $all_from = join '/', 'lib', split m/-/, name . '.pm';
+    `perldoc -tF $all_from > README` if ! -e 'README' || (stat $all_from)[9] > (stat 'README')[9];
 }
 
 auto_install;

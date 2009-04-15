@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use Google::Search;
+my $key = 'ABQIAAAAtDqLrYRkXZ61bOjIaaXZyxQRY_BHZpnLMrZfJ9KcaAuQJCJzjxRJoUJ6qIwpBfxHzBbzHItQ1J7i0w';
+my $referrer = 'http://www.my.site';
+my $Search = Google::Search->Books(q => '9529950845', key=>$key,
+referrer=>$referrer );
+
+print "Here\n";
+my $Results = $Search->all;
+print "Here\n";

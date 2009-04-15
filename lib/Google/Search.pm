@@ -13,7 +13,7 @@ Version 0.02
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.021';
 
 
 =head1 SYNOPSIS
@@ -310,7 +310,9 @@ sub all {
 
     my $result = $self->first;
     1 while $result && ($result = $result->next); # Fetch everything
-    die $self->error->reason unless $self->error->message eq "out of range start";
+    if ($self->error) {
+        die $self->error->reason unless $self->error->message eq "out of range start";
+    }
 
     my @results = @{ $self->_result };
     return wantarray ? @results : \@results;
@@ -337,7 +339,9 @@ sub match {
         push @matched, $result if $matcher->($result);
         $result = $result->next;
     }
-    die $self->error->reason unless $self->error->message eq "out of range start";
+    if ($self->error) {
+        die $self->error->reason unless $self->error->message eq "out of range start";
+    }
     return @matched;
 }
 
@@ -359,7 +363,9 @@ sub first_match {
         return $result if $matcher->($result);
         $result = $result->next;
     }
-    die $self->error->reason unless $self->error->message eq "out of range start";
+    if ($self->error) {
+        die $self->error->reason unless $self->error->message eq "out of range start";
+    }
     return undef;
 }
 
