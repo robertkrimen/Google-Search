@@ -1,41 +1,192 @@
-Google-Search
+NAME
+    Google::Search - Interface to the Google AJAX Search API
 
+VERSION
+    Version 0.021
 
-INSTALLATION
+SYNOPSIS
+        my $key = ... # This should be a valid API key, gotten from:
+                      # http://code.google.com/apis/ajaxsearch/signup.html
 
-To install this module, run the following commands:
+        my $referer = "http://www.mysite.com/index.html" # This should be a valid referer for the above key
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+        my $search = Google::Search->Web(q => "rock", key => $key, referer => $referer);
+        my $result = $search->first;
+        while ($result) {
+            print $result->number, " ", $result->uri, "\n";
+            $result = $result->next;
+        }
 
-SUPPORT AND DOCUMENTATION
+        $search = Google::Search->Local(..., q => "rock");
 
-After installing, you can find documentation for this module with the
-perldoc command.
+        $search = Google::Search->Video(..., q => "rock");
 
-    perldoc Google::Search
+        $search = Google::Search->Blog(..., q => "rock");
 
-You can also look for information at:
+        $search = Google::Search->News(..., q => "rock");
 
-    RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Google-Search
+        $search = Google::Search->Book(..., q => "rock");
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Google-Search
+        $search = Google::Search->Image(..., q => "rock");
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Google-Search
+        # You can also take advantage of each service's specialized interface
+        # The search below specifies the latitude and longitude:
+        $search = Google::Search->Local(..., q => { q => "rock", sll => "33.823230,-116.512110" }, ...);
 
-    Search CPAN
-        http://search.cpan.org/dist/Google-Search
+DESCRIPTION
+    Google::Search is an interface to the Google AJAX Search API
+    (<http://code.google.com/apis/ajaxsearch/>).
 
+    Currently, their API looks like it will fetch you the top 28 results for
+    your search query.
 
-COPYRIGHT AND LICENCE
+    According to the Terms of Service, you need to sign up for an API key
+    here: <http://code.google.com/apis/ajaxsearch/signup.html>
 
-Copyright (C) 2008 Robert Krimen
+METHODS
+  Google::Search->Web(...)
+    Create a new web search. See "new" for more information.
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+  Google::Search->Local(...)
+    Create a new local search. See "new" for more information.
+
+  Google::Search->Video(...)
+    Create a new video search. See "new" for more information.
+
+  Google::Search->Blog(...)
+  Google::Search->Blogs(...)
+    Create a new blog search. See "new" for more information.
+
+  Google::Search->News(...)
+    Create a new news search. See "new" for more information.
+
+  Google::Search->Book(...)
+  Google::Search->Books(...)
+    Create a new book search. See "new" for more information.
+
+  Google::Search->Image(...)
+  Google::Search->Images(...)
+    Create a new book search. See "new" for more information.
+
+  Google::Search->new(...)
+    Create and return a new Google::Search object
+
+    You can configure the search by passing the following to "new":
+
+        q               The search phrase to submit to Google
+                        Optionally, this can also be a hash of parameters to submit. You can
+                        use the hash form to take advantage of each service's varying interface.
+                        Make sure to at least include a C<q> parameter with your search.
+
+        key             Your Google AJAX Search API key (see Description)
+
+        referer         A referer that is valid for the above key
+
+        service         The service to search under. This can be any of: web,
+                        local, video, blog, news, book, or image.
+
+  $search->first
+    Returns a Google::Search::Result representing the first result in the
+    search, if any.
+
+    Returns undef if nothing was found
+
+  $search->next
+    An iterator for $search. Will the return the next result each time it is
+    called, and undef when there are no more results.
+
+    Returns a Google::Search::Result
+
+    Returns undef if nothing was found
+
+  $search->result( <rank> )
+    Returns a Google::Search::Result corresponding to the result at <rank>
+
+    These are equivalent:
+
+        $search->result(0)
+
+        $search->first
+
+  $search->all
+    Returns Google::Search::Result list which includes every result Google
+    has returned for the query
+
+    In scalar context an array reference is returned, a list otherwise
+
+    An empty list is returned if nothing was found
+
+  $search->match( <code> )
+    Returns a Google::Search::Result list
+
+    This method will iterate through each result in the search, passing the
+    result to <code> as the first argument. If <code> returns true, then the
+    result will be included in the returned list
+
+    In scalar context this method returns the number of matches
+
+  $search->first_match( <code> )
+    Returns a Google::Search::Result that is the first to match <code>
+
+    This method will iterate through each result in the search, passing the
+    result to <code> as the first argument. If <code> returns true, then the
+    result will be returned and iteration will stop.
+
+  $search->error
+    Returns a Google::Search::Error if there was an error with the last
+    search
+
+    If you receive undef from a result access then you can use this routine
+    to see if there was a problem
+
+        warn $search->error->reason;
+
+        warn $search->error->http_response->as_string;
+
+        # Etc, etc.
+
+    This will return undef if no error was encountered
+
+AUTHOR
+    Robert Krimen, "<rkrimen at cpan.org>"
+
+SEE ALSO
+    REST::Google::Search
+
+BUGS
+    Please report any bugs or feature requests to "bug-google-search at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Google-Search>. I will
+    be notified, and then you'll automatically be notified of progress on
+    your bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Google::Search
+
+    You can also look for information at:
+
+    *   RT: CPAN's request tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Google-Search>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/Google-Search>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/Google-Search>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/Google-Search>
+
+ACKNOWLEDGEMENTS
+COPYRIGHT & LICENSE
+    Copyright 2008 Robert Krimen, all rights reserved.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 

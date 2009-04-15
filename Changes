@@ -1,10 +1,11 @@
 0.021 Wednesday April 15 10:24:50 PDT 2009:
- - Fixed bug 45061 (thanks Paolo Tealdi)
+    - Fixed bug 45061 (thanks Paolo Tealdi)
+    - Fixed error with passing an ARRAY reference to LWP ->get
 
 0.020 Thursday May 01 11:42:25 PDT 2008:
- - Documentation tweaks
- - Fixed issue with $self->v returning as a number instead of string
- - Added ->make_immutable
+    - Documentation tweaks
+     - Fixed issue with $self->v returning as a number instead of string
+     - Added ->make_immutable
 
 0.010 Thursday May 01 02:26:12 PDT 2008:
- - Initial release
+     - Initial release

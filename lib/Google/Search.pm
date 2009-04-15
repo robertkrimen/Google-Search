@@ -9,7 +9,7 @@ Google::Search - Interface to the Google AJAX Search API
 
 =head1 VERSION
 
-Version 0.02
+Version 0.021
 
 =cut
 
@@ -212,7 +212,7 @@ sub request {
     my $uri = $self->uri->clone;
     $uri->query_form({ v => $self->v, rsz => $self->rsz, @parameters, @_ });
 
-    return unless my $http_response = $self->agent->get($uri, \@headers);
+    return unless my $http_response = $self->agent->get($uri, @headers);
 
     return Google::Search::Response->new(http_response => $http_response);
 }
