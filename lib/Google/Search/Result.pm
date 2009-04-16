@@ -244,8 +244,8 @@ use Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
-__PACKAGE__->has_field($_) for qw/title titleNoFormatting content url authors publishedYear bookId pageCount/;
-__PACKAGE__->has_uri_field($_) for qw/unescapedUrl/;
+__PACKAGE__->has_field($_) for qw/title titleNoFormatting content url authors publishedYear bookId pageCount tbWidth tbHeight/;
+__PACKAGE__->has_uri_field($_) for qw/unescapedUrl tbUrl/;
 sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Image;

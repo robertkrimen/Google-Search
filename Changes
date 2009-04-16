@@ -1,3 +1,6 @@
+0.022 Thursday April 16 01:09:46 PDT 2009:
+    - Added tb* support to the book result class
+
 0.021 Wednesday April 15 10:24:50 PDT 2009:
     - Fixed bug 45061 (thanks Paolo Tealdi)
     - Fixed error with passing an ARRAY reference to LWP ->get
