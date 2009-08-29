@@ -11,11 +11,15 @@ use overload
 has code => qw/is ro isa Int/;
 has message => qw/is ro isa Str/, default => "";
 has http_response => qw/is ro isa HTTP::Response/;
-has reason => qw/is ro isa Str required 1 lazy 1/, default => sub {
+has _reason => qw/init_arg reason is ro isa Str required 1 lazy 1/, default => sub {
     my $self = shift;
     return $self->message unless defined $self->code;
     return join " ", $self->code, $self->message;
 
 };
+
+sub reason {
+    return shift->_reason( @_ );
+}
 
 1;

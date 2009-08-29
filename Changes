@@ -1,3 +1,6 @@
+0.023 Friday August 28 18:24:51 PDT 2009:
+    - Fixed Google::Search::Error to be compatible with the latest Moose (rt49082)
+
 0.022 Thursday April 16 01:09:46 PDT 2009:
     - Added tb* support to the book result class
 

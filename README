@@ -2,7 +2,7 @@ NAME
     Google::Search - Interface to the Google AJAX Search API
 
 VERSION
-    Version 0.021
+    Version 0.023
 
 SYNOPSIS
         my $key = ... # This should be a valid API key, gotten from:
