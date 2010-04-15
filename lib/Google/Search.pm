@@ -30,21 +30,21 @@ our $VERSION = '0.023';
         $result = $result->next;
     }
 
-    $search = Google::Search->Local(..., q => "rock");
+    $search = Google::Search->Local( ..., q => "rock" );
 
-    $search = Google::Search->Video(..., q => "rock");
+    $search = Google::Search->Video( ..., q => "rock" );
 
-    $search = Google::Search->Blog(..., q => "rock");
+    $search = Google::Search->Blog( ..., q => "rock" );
 
-    $search = Google::Search->News(..., q => "rock");
+    $search = Google::Search->News( ..., q => "rock" );
 
-    $search = Google::Search->Book(..., q => "rock");
+    $search = Google::Search->Book( ..., q => "rock" );
 
-    $search = Google::Search->Image(..., q => "rock");
+    $search = Google::Search->Image( ..., q => "rock" );
 
     # You can also take advantage of each service's specialized interface
     # The search below specifies the latitude and longitude:
-    $search = Google::Search->Local(..., q => { q => "rock", sll => "33.823230,-116.512110" }, ...);
+    $search = Google::Search->Local( ..., q => { q => "rock", sll => "33.823230,-116.512110" }, ... );
     
 =head1 DESCRIPTION
 
@@ -176,12 +176,13 @@ sub _build_rsz_number {
     croak "Don't understand rsz ($rsz)";
 }
 
-has _page => qw/is ro required 1/, default => sub { [] };
-has _result => qw/is ro required 1/, default => sub { [] };
-has current => qw/is ro required 1 lazy 1/, default => sub {
+has _page => qw/ is ro required 1 /, default => sub { [] };
+has _result => qw/ is ro required 1 /, default => sub { [] };
+has current => qw/ is ro lazy_build 1 /;
+sub _build_current {
     return shift->first;
-};
-has error => qw/is rw/;
+}
+has error => qw/ is rw /;
 
 sub uri_for_service {
     my $self = shift;
