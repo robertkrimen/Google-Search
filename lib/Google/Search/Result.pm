@@ -51,78 +51,7 @@ The result class as given by Google
 
 =cut
 
-#package Google::Search::Result::Web;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting visibleUrl content/;
-#__PACKAGE__->has_uri_field($_) for qw/unescapedUrl cacheUrl/;
-#sub uri { return shift->unescapedUrl(@_) }
-
-#package Google::Search::Result::Local;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting lat lng streetAddress city region country/;
-#__PACKAGE__->has_uri_field($_) for qw/url ddUrl ddUrlToHere ddUrlFromHere staticMapUrl/;
-#sub uri { return shift->url(@_) }
-
-#package Google::Search::Result::Video;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting content published publisher duration tbWidth tbHeight/;
-#__PACKAGE__->has_uri_field($_) for qw/url tbUrl playUrl/;
-#sub uri { return shift->url(@_) }
-
-#package Google::Search::Result::Blog;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting content publishedDate author/;
-#__PACKAGE__->has_uri_field($_) for qw/blogUrl postUrl/;
-#sub uri { return shift->postUrl(@_) }
-
-#package Google::Search::Result::News;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting content url publisher location publishedDate/;
-#__PACKAGE__->has_uri_field($_) for qw/unescapedUrl clusterUrl/;
-#sub uri { return shift->unescapedUrl(@_) }
-
-#package Google::Search::Result::Book;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting content url authors publishedYear bookId pageCount/;
-#__PACKAGE__->has_uri_field($_) for qw/unescapedUrl/;
-#sub uri { return shift->unescapedUrl(@_) }
-
-#package Google::Search::Result::Image;
-
-#use Moose;
-#use Google::Search::Carp;
-#extends qw/Google::Search::Result/;
-
-#__PACKAGE__->has_field($_) for qw/title titleNoFormatting content contentNoFormatting url visibleUrl width height tbWidth tbHeight/;
-#__PACKAGE__->has_uri_field($_) for qw/unescapedUrl originalContextUrl tbUrl/;
-
-#sub uri { return shift->unescapedUrl(@_) }
-
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 
 use URI;
@@ -190,7 +119,7 @@ sub parse {
 
 package Google::Search::Result::Web;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
@@ -200,7 +129,7 @@ sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Local;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
@@ -210,7 +139,7 @@ sub uri { return shift->url(@_) }
 
 package Google::Search::Result::Video;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
@@ -220,7 +149,7 @@ sub uri { return shift->url(@_) }
 
 package Google::Search::Result::Blog;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
@@ -230,7 +159,7 @@ sub uri { return shift->postUrl(@_) }
 
 package Google::Search::Result::News;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
@@ -240,7 +169,7 @@ sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Book;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 
@@ -250,7 +179,7 @@ sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Image;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 extends qw/Google::Search::Result/;
 

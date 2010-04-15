@@ -1,6 +1,6 @@
 package Google::Search::Response;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 
 use Google::Search::Error;

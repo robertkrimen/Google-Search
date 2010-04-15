@@ -56,7 +56,7 @@ According to the Terms of Service, you need to sign up for an API key here: L<ht
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 
 use Google::Search::Response;
@@ -145,7 +145,7 @@ for my $service (keys %{ SERVICE_URI() }) {
     my $method = ucfirst $service;
     *$method = sub {
         my $class = shift;
-        return $class->new(service => $service, @_);
+        return $class->new( service => $service, @_ );
     };
 }
 
@@ -160,18 +160,22 @@ has uri => qw/is ro required 1 lazy 1 isa URI/, default => sub {
     my $self = shift;
     return URI->new($self->uri_for_service($self->service));
 };
-has q => qw/is ro required 1/;
-has v => qw/is ro required 1 isa Str/, default => sub { "1.0" };
-has referer => qw/is ro isa Str/;
-has key => qw/is ro isa Str/;
-has rsz => qw/is ro required 1 isa Str default small/;
-has rsz_number => qw/is ro required 1 isa Int/, default => sub {
+has q => qw/ is ro required 1 /;
+has v => qw/ is ro lazy_build 1 isa Str /;
+sub _build_v { '1.0' }
+has referer => qw/ is ro isa Str /;
+has key => qw/ is ro isa Str /;
+has rsz => qw/ is ro lazy_build 1 isa Str /;
+sub _build_rsz { 'small' }
+has rsz_number => qw/ is ro lazy_build 1 isa Int /;
+sub _build_rsz_number {
     my $self = shift;
     my $rsz = $self->rsz;
     return 4 if $rsz eq "small";
     return 8 if $rsz eq "large";
     croak "Don't understand rsz ($rsz)";
-};
+}
+
 has _page => qw/is ro required 1/, default => sub { [] };
 has _result => qw/is ro required 1/, default => sub { [] };
 has current => qw/is ro required 1 lazy 1/, default => sub {

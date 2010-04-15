@@ -1,6 +1,6 @@
 package Google::Search::Error;
 
-use Moose;
+use Any::Moose;
 use Google::Search::Carp;
 
 use overload
