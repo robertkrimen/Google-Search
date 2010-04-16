@@ -50,7 +50,7 @@ our $VERSION = '0.023';
 
 Google::Search is an interface to the Google AJAX Search API (L<http://code.google.com/apis/ajaxsearch/>). 
 
-Currently, their API looks like it will fetch you the top 28 results for your search query.
+Currently, their API looks like it will fetch you the top 64 results for your search query.
 
 According to the Terms of Service, you need to sign up for an API key here: L<http://code.google.com/apis/ajaxsearch/signup.html>
 
@@ -166,7 +166,7 @@ sub _build_v { '1.0' }
 has referer => qw/ is ro isa Str /;
 has key => qw/ is ro isa Str /;
 has rsz => qw/ is ro lazy_build 1 isa Str /;
-sub _build_rsz { 'small' }
+sub _build_rsz { 'large' }
 has rsz_number => qw/ is ro lazy_build 1 isa Int /;
 sub _build_rsz_number {
     my $self = shift;
