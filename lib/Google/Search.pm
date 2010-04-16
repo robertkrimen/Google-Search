@@ -217,9 +217,9 @@ sub request {
     my $uri = $self->uri->clone;
     $uri->query_form({ v => $self->v, rsz => $self->rsz, @parameters, @_ });
 
-    return unless my $http_response = $self->agent->get($uri, @headers);
+    return unless my $http_response = $self->agent->get( $uri, @headers );
 
-    return Google::Search::Response->new(http_response => $http_response);
+    return Google::Search::Response->new( http_response => $http_response );
 }
 
 sub page {
@@ -228,9 +228,10 @@ sub page {
 
     $self->error(undef);
 
-    my $page = $self->_page->[$number] ||= Google::Search::Page->new(search => $self, number => $number);
+    my $page = $self->_page->[$number] ||=
+            Google::Search::Page->new(search => $self, number => $number);
 
-    $self->error($page->error) if $page->error;
+    $self->error( $page->error ) if $page->error;
 
     return $page;
 }

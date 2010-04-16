@@ -24,10 +24,11 @@ Test::Most
 _END_
 
     map { my ($pk, $vr) = split m/\s/; requires $pk => $vr || 0 } grep { ! /^\s*#/ } split m/\n/, <<_END_;
+Any::Moose
 Carp::Clan::Share
 JSON 2
 LWP::UserAgent
-Moose
+Try::Tiny
 URI
 _END_
 }
