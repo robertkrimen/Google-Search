@@ -43,7 +43,10 @@ SKIP: {
     my $search = Google::Search->Web( referer => $referer, key => $key, q => { q => 'rock' } );
     ok( $search );
     ok( $search->first ) || diag $search->error->http_response->as_string;
-    ok( $search->result( 59) ) || diag $search->error->http_response->as_string;
+    ok( $search->result( 59 ) ) || diag $search->error->http_response->as_string;
+    is( $search->first->rank, 0 );
+    is( $search->result( 59 )->rank, 59 );
+
     ok( !$search->result( 64  ) );
     my $error = $search->error;
     ok( $error );

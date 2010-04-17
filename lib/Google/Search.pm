@@ -20,8 +20,8 @@ our $VERSION = '0.024';
 
     my $search = Google::Search->Web( query => "rock" );
     my $result = $search->first;
-    while ($result) {
-        print $result->number, " ", $result->uri, "\n";
+    while ( $result ) {
+        print $result->rank, " ", $result->uri, "\n";
         $result = $result->next;
     }
 
@@ -90,29 +90,6 @@ BEGIN {
     );
 }
 
-=head1 USAGE
-
-=head2 Google::Search->new( ... ) 
-
-Prepare a new search object (handle)
-
-You can configure the search by passing the following to C<new>:
-
-    query           The search phrase to submit to Google
-                    Optionally, this can also be a hash of parameters to submit. You can
-                    use the hash form to take advantage of each service's varying interface.
-                    Make sure to at least include a C<q> parameter with your search.
-
-    service         The service to search under. This can be any of: web,
-                    local, video, blog, news, book, image, patent.
-
-    key             Optional. Your Google AJAX Search API key (see Description)
-
-    referrer        Optional. A referrer that is valid for the above key
-                    For legacy purposes, "referer" is an acceptable spelling
-
-Both C<query> and C<service> are required
-
 =head1 Shortcut usage for a specific service
 
 =head2 Google::Search->Web
@@ -130,6 +107,32 @@ Both C<query> and C<service> are required
 =head2 Google::Search->Image
 
 =head2 Google::Search->Patent
+
+=head1 USAGE
+
+=head2 Google::Search->new( ... ) 
+
+Prepare a new search object (handle)
+
+You can configure the search by passing the following to C<new>:
+
+    query           The search phrase to submit to Google
+                    Optionally, this can also be a hash of parameters to submit. You can
+                    use the hash form to take advantage of each service's varying interface.
+                    Make sure to at least include a "q" parameter with your search
+
+    service         The service to search under. This can be any of: web,
+                    local, video, blog, news, book, image, patent
+
+    start           Optional. Start searching from "start" rank instead of 0.
+                    Google::Search will skip fetching unnecessary results
+
+    key             Optional. Your Google AJAX Search API key (see Description)
+
+    referrer        Optional. A referrer that is valid for the above key
+                    For legacy purposes, "referer" is an acceptable spelling
+
+Both C<query> and C<service> are required
 
 =cut
 

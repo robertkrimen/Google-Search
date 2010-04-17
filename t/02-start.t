@@ -22,6 +22,7 @@ SKIP: {
     diag( $s0->result( 11 )->uri );
     diag( $s0->first->uri );
     diag( $s11->first->uri );
+    is( $s11->first->rank, 11 );
     is( $s0->result( 11 )->uri, $s11->first->uri );
 }
 

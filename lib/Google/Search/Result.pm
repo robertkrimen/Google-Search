@@ -31,9 +31,9 @@ A L<URI> object best representing the location of the result
 
 "Supplies the title, but unlike .title, this property is stripped of html markup (e.g., <b>, <i>, etc.)"
 
-=head2 $result->number
+=head2 $result->rank
 
-The position of the result in the search (starting from 0)
+The position of the result in the search (0-based)
 
 =head2 $result->previous
 
