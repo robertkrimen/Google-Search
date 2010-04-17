@@ -62,6 +62,7 @@ our $field = sub {
         my $self = shift;
         my $value = $self->get( $name );
         $value = URI->new( $value ) if $value && $field{uri};
+        return $value;
     } );
 };
 
@@ -81,12 +82,12 @@ sub previous {
     my $self = shift;
     my $number = $self->number;
     return undef unless $number > 0;
-    return $self->search->result($number - 1);
+    return $self->search->result( $number - 1 );
 }
 
 sub next {
     my $self = shift;
-    return $self->search->result($self->number + 1);
+    return $self->search->result( $self->number + 1 );
 }
 
 sub get {
@@ -115,8 +116,18 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting visibleUrl content /;
-$field->( name => $_, uri => 1 ) for qw/ unescapedUrl cacheUrl /;
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+visibleUrl
+content
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+unescapedUrl
+cacheUrl
+/;
+
 sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Local;
@@ -125,8 +136,25 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting lat lng streetAddress city region country /;
-$field->( name => $_, uri => 1 ) for qw/ url ddUrl ddUrlToHere ddUrlFromHere staticMapUrl /;
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+lat
+lng
+streetAddress
+city
+region
+country
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+url
+ddUrl
+ddUrlToHere
+ddUrlFromHere
+staticMapUrl
+/;
+
 sub uri { return shift->url(@_) }
 
 package Google::Search::Result::Video;
@@ -135,8 +163,23 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting content published publisher duration tbWidth tbHeight /;
-$field->( name => $_, uri => 1 ) for qw/ url tbUrl playUrl /;
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+content
+published
+publisher
+duration
+tbWidth
+tbHeight
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+url
+tbUrl
+playUrl
+/;
+
 sub uri { return shift->url(@_) }
 
 package Google::Search::Result::Blog;
@@ -145,8 +188,19 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting content publishedDate author /;
-$field->( name => $_, uri => 1 ) for qw/ blogUrl postUrl /;
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+content
+publishedDate
+author
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+blogUrl
+postUrl
+/;
+
 sub uri { return shift->postUrl(@_) }
 
 package Google::Search::Result::News;
@@ -155,8 +209,21 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting content url publisher location publishedDate /;
-$field->( name => $_, uri => 1 ) for qw/ unescapedUrl clusterUrl /;
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+content
+url
+publisher
+location
+publishedDate
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+unescapedUrl
+clusterUrl
+/;
+
 sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Book;
@@ -165,8 +232,26 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting content url authors publishedYear bookId pageCount tbWidth tbHeight /;
-$field->( name => $_, uri => 1 ) for qw/ unescapedUrl tbUrl /;
+$field->( name => $_ ) for
+qw/
+title
+titleNoFormatting
+content
+url
+authors
+publishedYear
+bookId
+pageCount
+tbWidth
+tbHeight
+/;
+
+$field->( name => $_, uri => 1 ) for
+qw/
+unescapedUrl
+tbUrl
+/;
+
 sub uri { return shift->unescapedUrl(@_) }
 
 package Google::Search::Result::Image;
@@ -175,8 +260,49 @@ use Any::Moose;
 use Google::Search::Carp;
 extends qw/ Google::Search::Result /;
 
-$field->( name => $_ ) for qw/ title titleNoFormatting content contentNoFormatting url visibleUrl width height tbWidth tbHeight /;
-$field->( name => $_, uri => 1 ) for qw/ unescapedUrl originalContextUrl tbUrl /;
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+content
+contentNoFormatting
+url
+visibleUrl
+width
+height
+tbWidth
+tbHeight
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+unescapedUrl
+originalContextUrl
+tbUrl
+/;
+
+sub uri { return shift->unescapedUrl(@_) }
+
+package Google::Search::Result::Patent;
+
+use Any::Moose;
+use Google::Search::Carp;
+extends qw/ Google::Search::Result /;
+
+$field->( name => $_ ) for qw/
+title
+titleNoFormatting
+content
+url
+applicationDate
+patentNumber
+patentStatus
+assignee
+/;
+
+$field->( name => $_, uri => 1 ) for qw/
+unescapedUrl
+originalContextUrl
+tbUrl
+/;
 
 sub uri { return shift->unescapedUrl(@_) }
 

@@ -69,10 +69,12 @@ BEGIN {
     use vars qw/ $BASE %SERVICE2URI /;
     $BASE = 'http://ajax.googleapis.com/ajax/services/search';
     %SERVICE2URI = (
-        map { $_ => "$BASE/$_" } qw/ web local video blogs news books images patent /,
+        videos => "$BASE/video",
         blog => "$BASE/blogs",
         book => "$BASE/books",
         image => "$BASE/images",
+        patents => "$BASE/patent",
+        map { $_ => "$BASE/$_" } qw/ web local video blogs news books images patent /,
     );
 }
 

@@ -15,7 +15,7 @@ my $referer = "http://search.cpan.org/~rkrimen/";
 my $key = "ABQIAAAAtDqLrYRkXZ61bOjIaaXZyxQRY_BHZpnLMrZfJ9KcaAuQJCJzjxRJoUJ6qIwpBfxHzBbzHItQ1J7i0w";
 my $search;
 
-ok( Google::Search->$_( q => { q => $_ } ) ) for qw/ Web Local Video Image Book News /;
+ok( Google::Search->$_( q => { q => $_ } ) ) for qw/ Web Local Video Image Book News Patent /;
 
 $search = Google::Search->Web( q => 'rock', v => '1.2', referer => 't' );
 ok( $search );
@@ -37,7 +37,7 @@ is( $search->referrer, 't' );
 
 SKIP: {
     skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
-    my $search = Google::Search->Web(referer => $referer, key => $key, q => { q => 'rock' } );
+    my $search = Google::Search->Web( referer => $referer, key => $key, q => { q => 'rock' } );
     ok( $search );
     ok( $search->first ) || diag $search->error->http_response->as_string;
     ok( $search->result( 59) ) || diag $search->error->http_response->as_string;
