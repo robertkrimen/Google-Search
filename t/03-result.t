@@ -15,8 +15,23 @@ sub result (@) {
     my $search = Google::Search->new( service => $service, query => 'rock', @_ );
     my $result = $search->first;
     die "Error searching in $service: ", $search->error->message unless $result;
-    diag( $result->title );
     return $result;
+}
+
+sub ok_diag ($) {
+    local $Test::Builder::Level += 1;
+    my $value = shift;
+    diag( $value );
+    ok( $value );
+}
+
+sub ok_attr (@) {
+    local $Test::Builder::Level += 1;
+    my $result = shift;
+    for ( @_ ) {
+        diag ( $result->$_ );
+        ok( $result->$_, "Missing $_ for " . $result->search->service );
+    }
 }
 
 SKIP: {
@@ -24,9 +39,16 @@ SKIP: {
 
     for ( qw/ web local video blog blogs
             news book books image images patent patents / ) {
-        diag( $_ );
-        ok( result( $_ )->title );
+        ok_diag( result( $_ )->title );
     }
+
+    ok_attr( result( 'local' ), qw/ lat lng streetAddress / );
+    ok_attr( result( 'video' ), qw/ published publisher / );
+    ok_attr( result( 'blog' ), qw/ blogUrl author / );
+    ok_attr( result( 'news' ), qw/ publisher publishedDate / );
+    ok_attr( result( 'book' ), qw/ publishedYear authors / );
+    ok_attr( result( 'image' ), qw/ width height / );
+    ok_attr( result( 'patent' ), qw/ assignee applicationDate patentNumber patentStatus / );
 }
 
 1;

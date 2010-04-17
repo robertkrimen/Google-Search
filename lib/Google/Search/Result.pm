@@ -71,8 +71,8 @@ use Google::Search::Carp;
 
 use URI;
 
-has page => qw/ is ro required 1 isa Google::Search::Page weak_ref 1 /, handles => [qw/ http_response /];
-has search => qw/ is ro required 1 isa Google::Search weak_ref 1 /;
+has page => qw/ is ro required 1 isa Google::Search::Page /, handles => [qw/ http_response /];
+has search => qw/ is ro required 1 isa Google::Search /;
 has number => qw/ is ro isa Int required 1 /;
 sub rank { return shift->number( @_ ) }
 has _content => qw/ is ro required 1 /;

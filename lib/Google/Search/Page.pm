@@ -3,7 +3,7 @@ package Google::Search::Page;
 use Any::Moose;
 use Google::Search::Carp;
 
-has search => qw/ is ro required 1 isa Google::Search weak_ref 1 /;
+has search => qw/ is ro required 1 isa Google::Search /;
 has number => qw/ is ro required 1 isa Int /;
 
 has response => qw/ is ro lazy_build 1 /, handles => [qw/ http_response results error /];
