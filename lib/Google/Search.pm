@@ -42,6 +42,9 @@ You can also take advantage of each service's specialized interface
 
     # The search below specifies the latitude and longitude:
     $search = Google::Search->Local( query => { q => "rock", sll => "33.823230,-116.512110" }, ... );
+
+    my $result = $search->first;
+    print $result->streetAddress, "\n";
     
 You can supply an API key and referrer (referer) if you have them
 
@@ -75,57 +78,23 @@ use Google::Search::Error;
 use LWP::UserAgent;
 
 BEGIN {
-    use vars qw/ $BASE %SERVICE2URI /;
-    $BASE = 'http://ajax.googleapis.com/ajax/services/search';
-    %SERVICE2URI = (
-        videos => "$BASE/video",
-        blog => "$BASE/blogs",
-        book => "$BASE/books",
-        image => "$BASE/images",
-        patents => "$BASE/patent",
-        map { $_ => "$BASE/$_" } qw/ web local video blogs news books images patent /,
+    use vars qw/ $Base %Service2URI /;
+    $Base = 'http://ajax.googleapis.com/ajax/services/search';
+    %Service2URI = (
+        videos => "$Base/video",
+        blog => "$Base/blogs",
+        book => "$Base/books",
+        image => "$Base/images",
+        patents => "$Base/patent",
+        map { $_ => "$Base/$_" } qw/ web local video blogs news books images patent /,
     );
 }
 
-=head1 METHODS
+=head1 USAGE
 
-=head2 Google::Search->Web(...)
+=head2 Google::Search->new( ... ) 
 
-Create a new web search. See C<new> for more information.
-
-=head2 Google::Search->Local(...)
-
-Create a new local search. See C<new> for more information.
-
-=head2 Google::Search->Video(...)
-
-Create a new video search. See C<new> for more information.
-
-=head2 Google::Search->Blog(...)
-
-=head2 Google::Search->Blogs(...)
-
-Create a new blog search. See C<new> for more information.
-
-=head2 Google::Search->News(...)
-
-Create a new news search. See C<new> for more information.
-
-=head2 Google::Search->Book(...)
-
-=head2 Google::Search->Books(...)
-
-Create a new book search. See C<new> for more information.
-
-=head2 Google::Search->Image(...)
-
-=head2 Google::Search->Images(...)
-
-Create a new book search. See C<new> for more information.
-
-=head2 Google::Search->new(...) 
-
-Create and return a new Google::Search object
+Prepare a new search object (handle)
 
 You can configure the search by passing the following to C<new>:
 
@@ -134,13 +103,33 @@ You can configure the search by passing the following to C<new>:
                     use the hash form to take advantage of each service's varying interface.
                     Make sure to at least include a C<q> parameter with your search.
 
-    key             Your Google AJAX Search API key (see Description)
-
-    referrer        A referrer that is valid for the above key
-                    For legacy purposes, "referer" is an acceptable spelling
-
     service         The service to search under. This can be any of: web,
                     local, video, blog, news, book, image, patent.
+
+    key             Optional. Your Google AJAX Search API key (see Description)
+
+    referrer        Optional. A referrer that is valid for the above key
+                    For legacy purposes, "referer" is an acceptable spelling
+
+Both C<query> and C<service> are required
+
+=head1 Shortcut usage for a specific service
+
+=head2 Google::Search->Web
+
+=head2 Google::Search->Local
+
+=head2 Google::Search->Video
+
+=head2 Google::Search->Blog
+
+=head2 Google::Search->News
+
+=head2 Google::Search->Book
+
+=head2 Google::Search->Image
+
+=head2 Google::Search->Patent
 
 =cut
 
@@ -149,7 +138,7 @@ sub service2uri {
     my $service = shift;
     croak "Missing service" unless $service;
     $service = lc $service;
-    return unless my $uri = $SERVICE2URI{$service};
+    return unless my $uri = $Service2URI{$service};
     return $uri;
 }
 
@@ -183,7 +172,7 @@ sub BUILDARGS {
     return $given;
 }
 
-for my $service ( keys %SERVICE2URI ) {
+for my $service ( keys %Service2URI ) {
     no strict 'refs';
     my $method = ucfirst $service;
     *$method = sub {
@@ -249,28 +238,29 @@ has error => qw/ is rw /;
 sub request {
     my $self = shift;
 
-    my @parameters;
-    my @headers;
+    my ( @query_form, @header_supplement );
 
-    my $referer = $self->referer;
-    my $key = $self->key;
+    {
+        my $referer = $self->referer;
+        my $key = $self->key;
 
-    push @headers, Referer => $referer if $referer;
-    push @parameters, key => $key if $key;
+        push @header_supplement, Referer => $referer if $referer;
+        push @query_form, key => $key if $key;
+    }
 
     my $query = $self->query;
     if (ref $query eq "HASH") {
         # TODO Check for query instead of q?
-        push @parameters, %$query;
+        push @query_form, %$query;
     }
     else {
-        push @parameters, q => $query;
+        push @query_form, q => $query;
     }
 
     my $uri = $self->uri->clone;
-    $uri->query_form({ start => $self->start, v => $self->version, rsz => $self->rsz, @parameters, @_ });
+    $uri->query_form({ v => $self->version, rsz => $self->rsz, @query_form, @_ });
 
-    return unless my $http_response = $self->agent->get( $uri, @headers );
+    return unless my $http_response = $self->agent->get( $uri, @header_supplement );
 
     return Google::Search::Response->new( http_response => $http_response );
 }
@@ -325,7 +315,7 @@ Returns a L<Google::Search::Result> corresponding to the result at <rank>
 
 These are equivalent:
 
-    $search->result(0)
+    $search->result( 0 )
 
     $search->first
 

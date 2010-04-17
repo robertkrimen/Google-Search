@@ -20,11 +20,6 @@ lib/Google/Search/Error.pm
 lib/Google/Search/Page.pm
 lib/Google/Search/Response.pm
 lib/Google/Search/Result.pm
-script/test
-script/bug45061
-t/00-load.t
 t/01-basic.t
-t/release/boilerplate.t
-t/release/pod-coverage.t
-t/release/pod.t
-
+t/02-start.t
+t/03-result.t
