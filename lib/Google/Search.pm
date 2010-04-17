@@ -65,24 +65,16 @@ use Google::Search::Result;
 use Google::Search::Error;
 use LWP::UserAgent;
 
-use constant SERVICE_URI => {
-    web => 'http://ajax.googleapis.com/ajax/services/search/web',
-
-    local => 'http://ajax.googleapis.com/ajax/services/search/local',
-
-    video => 'http://ajax.googleapis.com/ajax/services/search/video',
-
-    blog => 'http://ajax.googleapis.com/ajax/services/search/blogs',
-    blogs => 'http://ajax.googleapis.com/ajax/services/search/blogs',
-
-    news => 'http://ajax.googleapis.com/ajax/services/search/news',
-
-    book => 'http://ajax.googleapis.com/ajax/services/search/books',
-    books => 'http://ajax.googleapis.com/ajax/services/search/books',
-
-    image => 'http://ajax.googleapis.com/ajax/services/search/images',
-    images => 'http://ajax.googleapis.com/ajax/services/search/images',
-};
+BEGIN {
+    use vars qw/ $BASE %SERVICE2URI /;
+    $BASE = 'http://ajax.googleapis.com/ajax/services/search';
+    %SERVICE2URI = (
+        map { $_ => "$BASE/$_" } qw/ web local video blogs news books images patent /,
+        blog => "$BASE/blogs",
+        book => "$BASE/books",
+        image => "$BASE/images",
+    );
+}
 
 =head1 METHODS
 
@@ -140,6 +132,19 @@ You can configure the search by passing the following to C<new>:
 
 =cut
 
+sub service2uri {
+    my $class = shift;
+    my $service = shift;
+    croak "Missing service" unless $service;
+    $service = lc $service;
+    return unless my $uri = $SERVICE2URI{$service};
+    return $uri;
+}
+
+sub uri_for_service {
+    return shift->service2uri( @_ );
+}
+
 sub BUILDARGS {
     my $class = shift;
     
@@ -162,7 +167,7 @@ sub BUILDARGS {
     return $given;
 }
 
-for my $service (keys %{ SERVICE_URI() }) {
+for my $service ( keys %SERVICE2URI ) {
     no strict 'refs';
     my $method = ucfirst $service;
     *$method = sub {
@@ -171,25 +176,38 @@ for my $service (keys %{ SERVICE_URI() }) {
     };
 }
 
-has agent => qw/is ro required 1 lazy 1 isa LWP::UserAgent/, default => sub {
+has agent => qw/ is ro lazy_build 1 isa LWP::UserAgent /;
+sub _build_agent {
     my $self = shift;
     my $agent = LWP::UserAgent->new;
     $agent->env_proxy;
     return $agent;
-};
-has service => qw/is ro lazy 1/, default => "web";
-has uri => qw/is ro required 1 lazy 1 isa URI/, default => sub {
+}
+
+has service => qw/ is ro lazy_build 1 /;
+sub _build_service { 'web' }
+
+has uri => qw/ is ro lazy_build 1 isa URI /;
+sub _build_uri {
     my $self = shift;
-    return URI->new($self->uri_for_service($self->service));
-};
+    my $service = $self->service;
+    my $uri = $self->service2uri( $service );
+    croak "Invalid service ($service)" unless $uri;
+    return URI->new( $uri );
+}
+
 has query => qw/ is ro required 1 /;
 sub q { return shift->query( @_ ) }
+
 has version => qw/ is ro lazy_build 1 isa Str /;
-sub v { return shift->version( @_ ) }
 sub _build_version { '1.0' }
+sub v { return shift->version( @_ ) }
+
 has referer => qw/ is ro isa Str /;
 sub referrer { return shift->referer( @_ ) }
+
 has key => qw/ is ro isa Str /;
+
 has rsz => qw/ is ro lazy_build 1 isa Str /;
 sub _build_rsz { 'large' }
 has rsz_number => qw/ is ro lazy_build 1 isa Int /;
@@ -208,16 +226,6 @@ sub _build_current {
     return shift->first;
 }
 has error => qw/ is rw /;
-
-sub uri_for_service {
-    my $self = shift;
-    my $service = shift;
-    return unless $service;
-    $service = lc $service;
-    $service =~ s/^\s*//g;
-    $service =~ s/\s*$//g;
-    return SERVICE_URI->{$service};
-}
 
 sub request {
     my $self = shift;
