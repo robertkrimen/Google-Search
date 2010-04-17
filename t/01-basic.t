@@ -9,17 +9,35 @@ plan qw/no_plan/;
 
 use Google::Search;
 
-my $referer = "http://search.cpan.org/~rkrimen/";
-my $key = "ABQIAAAAtDqLrYRkXZ61bOjIaaXZyxQRY_BHZpnLMrZfJ9KcaAuQJCJzjxRJoUJ6qIwpBfxHzBbzHItQ1J7i0w";
 my $maximum = 64;
 
-ok( Google::Search->$_( q => { q => "$_" } ) ) for qw/ Web Local Video Image Book News /;
-my $search = Google::Search->Web( q => "rock" );
+my $referer = "http://search.cpan.org/~rkrimen/";
+my $key = "ABQIAAAAtDqLrYRkXZ61bOjIaaXZyxQRY_BHZpnLMrZfJ9KcaAuQJCJzjxRJoUJ6qIwpBfxHzBbzHItQ1J7i0w";
+my $search;
+
+ok( Google::Search->$_( q => { q => $_ } ) ) for qw/ Web Local Video Image Book News /;
+
+$search = Google::Search->Web( q => 'rock', v => '1.2', referer => 't' );
 ok( $search );
+is( $search->query, 'rock' );
+is( $search->q, 'rock' );
+is( $search->version, '1.2' );
+is( $search->v, '1.2' );
+is( $search->referer, 't' );
+is( $search->referrer, 't' );
+
+$search = Google::Search->Web( query => 'rock', version => '1.2', referer => 't' );
+ok( $search );
+is( $search->query, 'rock' );
+is( $search->q, 'rock' );
+is( $search->version, '1.2' );
+is( $search->v, '1.2' );
+is( $search->referer, 't' );
+is( $search->referrer, 't' );
 
 SKIP: {
-    skip "Do TEST_RELEASE=1 to go out to Google and run some tests" unless $ENV{TEST_RELEASE};
-    my $search = Google::Search->Web(referer => $referer, key => $key, q => { q => "rock" } );
+    skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
+    my $search = Google::Search->Web(referer => $referer, key => $key, q => { q => 'rock' } );
     ok( $search );
     ok( $search->first ) || diag $search->error->http_response->as_string;
     ok( $search->result( 59) ) || diag $search->error->http_response->as_string;

@@ -17,27 +17,27 @@ SYNOPSIS
             $result = $result->next;
         }
 
-        $search = Google::Search->Local(..., q => "rock");
+        $search = Google::Search->Local( ..., q => "rock" );
 
-        $search = Google::Search->Video(..., q => "rock");
+        $search = Google::Search->Video( ..., q => "rock" );
 
-        $search = Google::Search->Blog(..., q => "rock");
+        $search = Google::Search->Blog( ..., q => "rock" );
 
-        $search = Google::Search->News(..., q => "rock");
+        $search = Google::Search->News( ..., q => "rock" );
 
-        $search = Google::Search->Book(..., q => "rock");
+        $search = Google::Search->Book( ..., q => "rock" );
 
-        $search = Google::Search->Image(..., q => "rock");
+        $search = Google::Search->Image( ..., q => "rock" );
 
         # You can also take advantage of each service's specialized interface
         # The search below specifies the latitude and longitude:
-        $search = Google::Search->Local(..., q => { q => "rock", sll => "33.823230,-116.512110" }, ...);
+        $search = Google::Search->Local( ..., q => { q => "rock", sll => "33.823230,-116.512110" }, ... );
 
 DESCRIPTION
     Google::Search is an interface to the Google AJAX Search API
     (<http://code.google.com/apis/ajaxsearch/>).
 
-    Currently, their API looks like it will fetch you the top 28 results for
+    Currently, their API looks like it will fetch you the top 64 results for
     your search query.
 
     According to the Terms of Service, you need to sign up for an API key

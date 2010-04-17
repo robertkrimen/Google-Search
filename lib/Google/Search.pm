@@ -140,6 +140,28 @@ You can configure the search by passing the following to C<new>:
 
 =cut
 
+sub BUILDARGS {
+    my $class = shift;
+    
+    my $given;
+    if ( 1 == @_ && ref $_[0] eq 'HASH' ) {
+        $given = $_[0];
+    }
+    elsif ( 0 == @_ % 2 ) {
+        $given = { @_ };
+    }
+    else {
+        croak "Odd number of arguments: @_";
+    }
+
+    $given->{query} = $given->{q} if defined $given->{q} && ! defined $given->{query};
+    $given->{version} = $given->{v} if defined $given->{v} && ! defined $given->{version};
+    $given->{referer} = $given->{referrer}
+        if defined $given->{referrer} && ! defined $given->{referer};
+
+    return $given;
+}
+
 for my $service (keys %{ SERVICE_URI() }) {
     no strict 'refs';
     my $method = ucfirst $service;
@@ -160,10 +182,13 @@ has uri => qw/is ro required 1 lazy 1 isa URI/, default => sub {
     my $self = shift;
     return URI->new($self->uri_for_service($self->service));
 };
-has q => qw/ is ro required 1 /;
-has v => qw/ is ro lazy_build 1 isa Str /;
-sub _build_v { '1.0' }
+has query => qw/ is ro required 1 /;
+sub q { return shift->query( @_ ) }
+has version => qw/ is ro lazy_build 1 isa Str /;
+sub v { return shift->version( @_ ) }
+sub _build_version { '1.0' }
 has referer => qw/ is ro isa Str /;
+sub referrer { return shift->referer( @_ ) }
 has key => qw/ is ro isa Str /;
 has rsz => qw/ is ro lazy_build 1 isa Str /;
 sub _build_rsz { 'large' }
@@ -206,16 +231,17 @@ sub request {
     push @headers, Referer => $referer if $referer;
     push @parameters, key => $key if $key;
 
-    my $q = $self->q;
-    if (ref $q eq "HASH") {
-        push @parameters, %$q;
+    my $query = $self->query;
+    if (ref $query eq "HASH") {
+        # TODO Check for query instead of q?
+        push @parameters, %$query;
     }
     else {
-        push @parameters, q => $q;
+        push @parameters, q => $query;
     }
 
     my $uri = $self->uri->clone;
-    $uri->query_form({ v => $self->v, rsz => $self->rsz, @parameters, @_ });
+    $uri->query_form({ v => $self->version, rsz => $self->rsz, @parameters, @_ });
 
     return unless my $http_response = $self->agent->get( $uri, @headers );
 
