@@ -15,7 +15,7 @@ sub _build_response {
 has start => qw/ is ro lazy_build 1 isa Int /;
 sub _build_start {
     my $self = shift;
-    return $self->number * $self->search->rsz_number;
+    return $self->number * $self->search->rsz2number;
 }
 
 sub result {

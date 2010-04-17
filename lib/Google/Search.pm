@@ -118,17 +118,18 @@ Create and return a new Google::Search object
 
 You can configure the search by passing the following to C<new>:
 
-    q               The search phrase to submit to Google
+    query           The search phrase to submit to Google
                     Optionally, this can also be a hash of parameters to submit. You can
                     use the hash form to take advantage of each service's varying interface.
                     Make sure to at least include a C<q> parameter with your search.
 
     key             Your Google AJAX Search API key (see Description)
 
-    referer         A referer that is valid for the above key
+    referrer        A referrer that is valid for the above key
+                    For legacy purposes, "referer" is an acceptable spelling
 
     service         The service to search under. This can be any of: web,
-                    local, video, blog, news, book, or image.
+                    local, video, blog, news, book, image, patent.
 
 =cut
 
@@ -208,10 +209,13 @@ sub referrer { return shift->referer( @_ ) }
 
 has key => qw/ is ro isa Str /;
 
+has start => qw/ is ro lazy_build 1 isa Int /;
+sub _build_start { 0 }
+
 has rsz => qw/ is ro lazy_build 1 isa Str /;
 sub _build_rsz { 'large' }
-has rsz_number => qw/ is ro lazy_build 1 isa Int /;
-sub _build_rsz_number {
+has rsz2number => qw/ is ro lazy_build 1 isa Int /;
+sub _build_rsz2number {
     my $self = shift;
     my $rsz = $self->rsz;
     return 4 if $rsz eq "small";
@@ -249,7 +253,7 @@ sub request {
     }
 
     my $uri = $self->uri->clone;
-    $uri->query_form({ v => $self->version, rsz => $self->rsz, @parameters, @_ });
+    $uri->query_form({ start => $self->start, v => $self->version, rsz => $self->rsz, @parameters, @_ });
 
     return unless my $http_response = $self->agent->get( $uri, @headers );
 
@@ -260,10 +264,10 @@ sub page {
     my $self = shift;
     my $number = shift;
 
-    $self->error(undef);
+    $self->error( undef );
 
     my $page = $self->_page->[$number] ||=
-            Google::Search::Page->new(search => $self, number => $number);
+            Google::Search::Page->new( search => $self, number => $number );
 
     $self->error( $page->error ) if $page->error;
 
@@ -280,7 +284,7 @@ Returns undef if nothing was found
 
 sub first {
     my $self = shift;
-    return $self->result(0);
+    return $self->result( $self->start );
 }
 
 =head2 $search->next 
@@ -316,16 +320,17 @@ sub result {
     my $self = shift;
     my $number = shift;
 
-    $self->error(undef);
+    $self->error( undef );
 
     return $self->_result->[$number] if $self->_result->[$number];
     my $result = do {
-        my $result_number = $number % $self->rsz_number;
-        my $page_number = int($number / $self->rsz_number);
-        my $page = $self->page($page_number);
-        my $content = $page->result($result_number);
-        if ($content) {
-            Google::Search::Result->parse($content, page => $page, search => $self, number => $number);
+        my $result_number = $number % $self->rsz2number;
+        my $page_number = int( $number / $self->rsz2number );
+        my $page = $self->page( $page_number );
+        my $content = $page->result( $result_number );
+        if ( $content ) {
+            Google::Search::Result->parse( $content,
+                page => $page, search => $self, number => $number);
         }
         else {
             undef;
@@ -349,7 +354,7 @@ sub all {
     my $self = shift;
 
     my $result = $self->first;
-    1 while $result && ($result = $result->next); # Fetch everything
+    1 while $result && ( $result = $result->next ); # Fetch everything
     if ($self->error) {
         die $self->error->reason unless $self->error->message eq "out of range start";
     }

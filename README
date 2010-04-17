@@ -73,17 +73,18 @@ METHODS
 
     You can configure the search by passing the following to "new":
 
-        q               The search phrase to submit to Google
+        query           The search phrase to submit to Google
                         Optionally, this can also be a hash of parameters to submit. You can
                         use the hash form to take advantage of each service's varying interface.
                         Make sure to at least include a C<q> parameter with your search.
 
         key             Your Google AJAX Search API key (see Description)
 
-        referer         A referer that is valid for the above key
+        referrer        A referrer that is valid for the above key
+                        For legacy purposes, "referer" is an acceptable spelling
 
         service         The service to search under. This can be any of: web,
-                        local, video, blog, news, book, or image.
+                        local, video, blog, news, book, image, patent.
 
   $search->first
     Returns a Google::Search::Result representing the first result in the
