@@ -35,6 +35,9 @@ is( $search->v, '1.2' );
 is( $search->referer, 't' );
 is( $search->referrer, 't' );
 
+$search = Google::Search->Web( 'rock' );
+is( $search->query, 'rock' );
+
 SKIP: {
     skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
     my $search = Google::Search->Web( referer => $referer, key => $key, q => { q => 'rock' } );

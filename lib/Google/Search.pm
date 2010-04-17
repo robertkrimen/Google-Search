@@ -9,43 +9,52 @@ Google::Search - Interface to the Google AJAX Search API
 
 =head1 VERSION
 
-Version 0.023
+Version 0.024
 
 =cut
 
-our $VERSION = '0.023';
+our $VERSION = '0.024';
 
 
 =head1 SYNOPSIS
 
-    my $key = ... # This should be a valid API key, gotten from:
-                  # http://code.google.com/apis/ajaxsearch/signup.html
-
-    my $referer = "http://www.mysite.com/index.html" # This should be a valid referer for the above key
-
-    my $search = Google::Search->Web(q => "rock", key => $key, referer => $referer);
+    my $search = Google::Search->Web( query => "rock" );
     my $result = $search->first;
     while ($result) {
         print $result->number, " ", $result->uri, "\n";
         $result = $result->next;
     }
 
-    $search = Google::Search->Local( ..., q => "rock" );
+You can also use the single-argument-style invocation:
 
-    $search = Google::Search->Video( ..., q => "rock" );
+    Google::Search->Web( "query" )
 
-    $search = Google::Search->Blog( ..., q => "rock" );
+The following kinds of searches are supported
 
-    $search = Google::Search->News( ..., q => "rock" );
+    Google::Search->Local( ... )
+    Google::Search->Video( ... )
+    Google::Search->Blog( ... )
+    Google::Search->News( ... )
+    Google::Search->Image( ... )
+    Google::Search->Patent( ... )
 
-    $search = Google::Search->Book( ..., q => "rock" );
+You can also take advantage of each service's specialized interface
 
-    $search = Google::Search->Image( ..., q => "rock" );
-
-    # You can also take advantage of each service's specialized interface
     # The search below specifies the latitude and longitude:
-    $search = Google::Search->Local( ..., q => { q => "rock", sll => "33.823230,-116.512110" }, ... );
+    $search = Google::Search->Local( query => { q => "rock", sll => "33.823230,-116.512110" }, ... );
     
+You can supply an API key and referrer (referer) if you have them
+
+    my $key = ... # This should be a valid API key, gotten from:
+                  # http://code.google.com/apis/ajaxsearch/signup.html
+
+    my $referrer = "http://example.com/" # This should be a valid referer for the above key
+
+    $search = Google::Search->Web(
+        key => $key, referrer => $referrer, # "referer =>" Would work too
+        query => { q => "rock", sll => "33.823230,-116.512110" }
+    );
+
 =head1 DESCRIPTION
 
 Google::Search is an interface to the Google AJAX Search API (L<http://code.google.com/apis/ajaxsearch/>). 
@@ -154,6 +163,10 @@ sub BUILDARGS {
     my $given;
     if ( 1 == @_ && ref $_[0] eq 'HASH' ) {
         $given = $_[0];
+    }
+    elsif ( 3 == @_ && $_[0] eq 'service' && ! ref $_[2] && defined $_[2] ) {
+        my $query = pop;
+        $given = { @_, query => $query };
     }
     elsif ( 0 == @_ % 2 ) {
         $given = { @_ };
