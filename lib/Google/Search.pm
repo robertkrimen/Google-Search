@@ -19,10 +19,8 @@ our $VERSION = '0.024';
 =head1 SYNOPSIS
 
     my $search = Google::Search->Web( query => "rock" );
-    my $result = $search->first;
-    while ( $result ) {
+    while ( my $result = $search->next ) {
         print $result->rank, " ", $result->uri, "\n";
-        $result = $result->next;
     }
 
 You can also use the single-argument-style invocation:
@@ -37,6 +35,10 @@ The following kinds of searches are supported
     Google::Search->News( ... )
     Google::Search->Image( ... )
     Google::Search->Patent( ... )
+
+Google suggest (using a different API) is also available
+
+    Google::Search->suggest( $term )
 
 You can also take advantage of each service's specialized interface
 
@@ -133,6 +135,33 @@ You can configure the search by passing the following to C<new>:
                     For legacy purposes, "referer" is an acceptable spelling
 
 Both C<query> and C<service> are required
+
+=head2 Google::Search->suggest( $term, ... )
+
+Return a nested array from the unpublic Google auto-complete suggestion service. Each
+inner array consists of: the suggestion, the number of results, and the rank of the suggestion
+
+    my $suggestions = Google::Search->suggest( 'monkey' )
+    print $suggestions->[0][0] # "monkey bread recipe"
+    print $suggestions->[0][1] # "413,000 results"
+    print $suggestions->[0][2] # 0
+
+    for my $suggestion ( @$suggestions ) {
+    }
+
+To override the language (or any query parameter or to add in your own parameters), pass in an array:
+
+    # Get the results back in German (de), overriding American (en-US)
+    Google::Search->suggest( [ hl => 'de' ], 'monkey' )
+
+To alter the URI hostname/path or to give a custom user agent, pass in a hash:
+
+    Google::Search->suggest( [ hl => 'de' ], 'monkey', {
+        host => 'clients1.google.de',
+        agent => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    } )
+
+The passing order of the array, hash, and string does not matter
 
 =cut
 
@@ -306,7 +335,7 @@ Returns undef if nothing was found
 
 =cut
 
-sub next {
+sub iterator {
     my $self = shift;
     return $self->current unless $self->{current};
     return $self->{current} = $self->current->next;
