@@ -2,6 +2,7 @@ use inc::Module::Install;
 
 name 'Google-Search';
 all_from 'lib/Google/Search.pm';
+readme_from 'lib/Google/Search.pm';
 
 resources repository => 'http://github.com/robertkrimen/google-search/tree/master';
 
@@ -33,12 +34,6 @@ URI
 _END_
 }
 
-if (-e 'inc/.author') {
-    my $all_from = join '/', 'lib', split m/-/, name . '.pm';
-    `perldoc -tF $all_from > README` if ! -e 'README' || (stat $all_from)[9] > (stat 'README')[9];
-}
-
 auto_install;
 
 WriteAll;
-

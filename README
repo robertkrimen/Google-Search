@@ -1,8 +1,9 @@
 NAME
-    Google::Search - Interface to the Google AJAX Search API
+    Google::Search - Interface to the Google AJAX Search API and suggestion
+    API
 
 VERSION
-    Version 0.024
+    Version 0.025
 
 SYNOPSIS
         my $search = Google::Search->Web( query => "rock" );
@@ -22,10 +23,6 @@ SYNOPSIS
         Google::Search->News( ... )
         Google::Search->Image( ... )
         Google::Search->Patent( ... )
-
-    Google suggest (using a different API) is also available
-
-        Google::Search->suggest( $term )
 
     You can also take advantage of each service's specialized interface
 
@@ -47,6 +44,11 @@ SYNOPSIS
             query => { q => "rock", sll => "33.823230,-116.512110" }
         );
 
+    Get suggestions from the unofficial Google suggestion API using
+    "suggest"
+
+        my $suggestions = Google::Search->suggest( $term )
+
 DESCRIPTION
     Google::Search is an interface to the Google AJAX Search API
     (<http://code.google.com/apis/ajaxsearch/>).
@@ -54,8 +56,8 @@ DESCRIPTION
     Currently, their API looks like it will fetch you the top 64 results for
     your search query.
 
-    According to the Terms of Service, you need to sign up for an API key
-    here: <http://code.google.com/apis/ajaxsearch/signup.html>
+    You may want to sign up for an API key, but it is not required. You can
+    do so here: <http://code.google.com/apis/ajaxsearch/signup.html>
 
 Shortcut usage for a specific service
   Google::Search->Web
@@ -89,35 +91,6 @@ USAGE
                         For legacy purposes, "referer" is an acceptable spelling
 
     Both "query" and "service" are required
-
-  Google::Search->suggest( $term, ... )
-    Return a nested array from the Google auto-complete suggestion service.
-    Each inner array consists of: the suggestion, the number of results, and
-    the rank of the suggestion
-
-        my $suggestions = Google::Search->suggest( 'monkey' )
-        print $suggestions->[0][0] # "monkey bread recipe"
-        print $suggestions->[0][1] # "413,000 results"
-        print $suggestions->[0][2] # 0
-
-        for my $suggestion ( @$suggestions ) {
-        }
-
-    To override the language (or any query parameter or to add in your own
-    parameters), pass in an array:
-
-        # Get the results back in German (de)
-        Google::Search->suggest( [ hl => 'de' ], 'monkey' )
-
-    To alter the URI hostname/path or to give a custom user agent, pass in a
-    hash:
-
-        Google::Search->suggest( [ hl => 'de' ], 'monkey', {
-            host => 'clients1.google.de',
-            agent => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
-        } )
-
-    The passing order of the array, hash, and string does not matter
 
   $search->first
     Returns a Google::Search::Result representing the first result in the
@@ -180,6 +153,36 @@ USAGE
         # Etc, etc.
 
     This will return undef if no error was encountered
+
+  Google::Search->suggest( $term, ... )
+    Return a nested array from the Google auto-complete suggestion service.
+    Each inner array consists of: the suggestion, the number of results, and
+    the rank of the suggestion:
+
+        my $suggestions = Google::Search->suggest( 'monkey' )
+        print $suggestions->[0][0] # "monkey bread recipe"
+        print $suggestions->[0][1] # "413,000 results"
+        print $suggestions->[0][2] # 0
+
+        for my $suggestion ( @$suggestions ) {
+            ...
+        }
+
+    To override the language (or any query parameter or to add in your own
+    parameters), pass in an array:
+
+        # Get the results back in German (de)
+        Google::Search->suggest( [ hl => 'de' ], 'monkey' )
+
+    To alter the URI hostname/path or to give a custom user agent, pass in a
+    hash:
+
+        Google::Search->suggest( [ hl => 'de' ], 'monkey', {
+            host => 'clients1.google.de',
+            agent => 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+        } )
+
+    The passing order of the array, hash, and string does not matter
 
 AUTHOR
     Robert Krimen, "<rkrimen at cpan.org>"

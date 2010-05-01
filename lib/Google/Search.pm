@@ -5,16 +5,15 @@ use strict;
 
 =head1 NAME
 
-Google::Search - Interface to the Google AJAX Search API
+Google::Search - Interface to the Google AJAX Search API and suggestion API
 
 =head1 VERSION
 
-Version 0.024
+Version 0.025
 
 =cut
 
-our $VERSION = '0.024';
-
+our $VERSION = '0.025';
 
 =head1 SYNOPSIS
 
@@ -56,7 +55,7 @@ You can supply an API key and referrer (referer) if you have them
         query => { q => "rock", sll => "33.823230,-116.512110" }
     );
 
-Google suggest (using an unofficial API) is also available
+Get suggestions from the unofficial Google suggestion API using C<suggest>
 
     my $suggestions = Google::Search->suggest( $term )
 
@@ -66,7 +65,7 @@ Google::Search is an interface to the Google AJAX Search API (L<http://code.goog
 
 Currently, their API looks like it will fetch you the top 64 results for your search query.
 
-According to the Terms of Service, you need to sign up for an API key here: L<http://code.google.com/apis/ajaxsearch/signup.html>
+You may want to sign up for an API key, but it is not required. You can do so here: L<http://code.google.com/apis/ajaxsearch/signup.html>
 
 =cut
 

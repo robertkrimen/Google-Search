@@ -15,6 +15,7 @@ inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
+inc/Module/Install/ReadmeFromPod.pm
 lib/Google/Search/Carp.pm
 lib/Google/Search/Error.pm
 lib/Google/Search/Page.pm
@@ -23,3 +24,5 @@ lib/Google/Search/Result.pm
 t/01-basic.t
 t/02-start.t
 t/03-result.t
+t/04-suggest.t
+

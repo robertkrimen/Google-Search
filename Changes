@@ -1,3 +1,6 @@
+0.025 Friday April 30 16:48:46 PDT 2010:
+    - Added ->suggest
+
 0.024 Friday April 16 19:55:50 PDT 2010:
     - Switch from Moose to Any::Moose
     - Added patent searching
