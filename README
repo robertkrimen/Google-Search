@@ -3,7 +3,7 @@ NAME
     API
 
 VERSION
-    Version 0.025
+    version 0.025
 
 SYNOPSIS
         my $search = Google::Search->Web( query => "rock" );
@@ -185,45 +185,11 @@ USAGE
     The passing order of the array, hash, and string does not matter
 
 AUTHOR
-    Robert Krimen, "<rkrimen at cpan.org>"
+      Robert Krimen <robertkrimen@gmail.com>
 
-SEE ALSO
-    REST::Google::Search
+COPYRIGHT AND LICENSE
+    This software is copyright (c) 2010 by Robert Krimen.
 
-BUGS
-    Please report any bugs or feature requests to "bug-google-search at
-    rt.cpan.org", or through the web interface at
-    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Google-Search>. I will
-    be notified, and then you'll automatically be notified of progress on
-    your bug as I make changes.
-
-SUPPORT
-    You can find documentation for this module with the perldoc command.
-
-        perldoc Google::Search
-
-    You can also look for information at:
-
-    *   RT: CPAN's request tracker
-
-        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Google-Search>
-
-    *   AnnoCPAN: Annotated CPAN documentation
-
-        <http://annocpan.org/dist/Google-Search>
-
-    *   CPAN Ratings
-
-        <http://cpanratings.perl.org/d/Google-Search>
-
-    *   Search CPAN
-
-        <http://search.cpan.org/dist/Google-Search>
-
-ACKNOWLEDGEMENTS
-COPYRIGHT & LICENSE
-    Copyright 2008 Robert Krimen, all rights reserved.
-
-    This program is free software; you can redistribute it and/or modify it
-    under the same terms as Perl itself.
+    This is free software; you can redistribute it and/or modify it under
+    the same terms as the Perl 5 programming language system itself.
 
