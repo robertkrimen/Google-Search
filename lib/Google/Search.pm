@@ -211,6 +211,11 @@ sub BUILDARGS {
     elsif ( 0 == @_ % 2 ) {
         $given = { @_ };
     }
+    elsif ( @_ > 3 && $_[0] eq 'service' ) {
+        my @given = splice @_, 0, 2;
+        push @given, query => shift @_;
+        $given = { @given, @_ };
+    }
     else {
         croak "Odd number of arguments: @_";
     }

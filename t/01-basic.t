@@ -11,7 +11,7 @@ my $maximum = 64;
 
 my $referer = "http://search.cpan.org/~rkrimen/";
 my $key = "ABQIAAAAtDqLrYRkXZ61bOjIaaXZyxQRY_BHZpnLMrZfJ9KcaAuQJCJzjxRJoUJ6qIwpBfxHzBbzHItQ1J7i0w";
-my $search;
+my ( $search, $request );
 
 ok( Google::Search->$_( q => { q => $_ } ) ) for qw/ Web Local Video Image Book News Patent /;
 
@@ -23,6 +23,9 @@ is( $search->version, '1.2' );
 is( $search->v, '1.2' );
 is( $search->referer, 't' );
 is( $search->referrer, 't' );
+$request = $search->build;
+like( $request->uri, qr{^http://ajax\.googleapis\.com/ajax/services/search/web\?} );
+cmp_deeply( { $request->uri->query_form }, { q => 'rock', v => '1.2', rsz => 'large' } );
 
 $search = Google::Search->Web( query => 'rock', version => '1.2', referer => 't' );
 ok( $search );
@@ -32,9 +35,20 @@ is( $search->version, '1.2' );
 is( $search->v, '1.2' );
 is( $search->referer, 't' );
 is( $search->referrer, 't' );
+$request = $search->build;
+like( $request->uri, qr{^http://ajax\.googleapis\.com/ajax/services/search/web\?} );
+cmp_deeply( { $request->uri->query_form }, { q => 'rock', v => '1.2', rsz => 'large' } );
 
 $search = Google::Search->Web( 'rock' );
 is( $search->query, 'rock' );
+$request = $search->build;
+like( $request->uri, qr{^http://ajax\.googleapis\.com/ajax/services/search/web\?} );
+cmp_deeply( { $request->uri->query_form }, { q => 'rock', v => '1.0', rsz => 'large' } );
+
+$search = Google::Search->Web( 'rock', unknown => 'de' );
+$request = $search->build;
+like( $request->uri, qr{^http://ajax\.googleapis\.com/ajax/services/search/web\?} );
+cmp_deeply( { $request->uri->query_form }, { q => 'rock', v => '1.0', rsz => 'large', unknown => 'de' } );
 
 SKIP: {
     skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
