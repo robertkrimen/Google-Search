@@ -67,6 +67,7 @@ use Google::Search::Page;
 use Google::Search::Result;
 use Google::Search::Error;
 use LWP::UserAgent;
+require HTTP::Request::Common;
 use JSON;
 
 my $json = JSON->new;
@@ -130,6 +131,17 @@ Both C<query> and C<service> are required
 
 =cut
 
+sub _inflate_query (@) {
+    my @query;
+    for (@_) {
+        if      ( ref eq 'HASH' )   { push @query, %$_ }
+        elsif   ( ref eq 'ARRAY' )  { push @query, @$_ }
+        elsif   ( ! ref )           { push @query, q => $_ } 
+        else                        { croak "Invalid query ($_)" }
+    }
+    return \@query;
+}
+
 {
     my $agent_;
     sub suggest {
@@ -185,10 +197,6 @@ sub service2uri {
     return $uri;
 }
 
-sub uri_for_service {
-    return shift->service2uri( @_ );
-}
-
 sub BUILDARGS {
     my $class = shift;
     
@@ -207,11 +215,26 @@ sub BUILDARGS {
         croak "Odd number of arguments: @_";
     }
 
-    $given->{query} = $given->{q} if defined $given->{q} && ! defined $given->{query};
-    $given->{version} = $given->{v} if defined $given->{v} && ! defined $given->{version};
-    $given->{referer} = $given->{referrer}
-        if defined $given->{referrer} && ! defined $given->{referer};
+    my $query = delete $given->{q};
+    $given->{query} = $query if defined $query && ! defined $given->{query};
 
+    my $version = delete $given->{v};
+    $given->{version} = $version if defined $version && ! defined $given->{version};
+
+    my $referrer = delete $given->{referrer};
+    $given->{referer} = $referrer if defined $referrer && ! defined $given->{referer};
+
+    $query = $given->{query};
+    my @query;
+
+    while( my( $key, $value ) = each %$given ) {
+        next if $key =~ m/^(?:agent|service|uri|query|version|hl|referer|
+            key|start|rsz|rsz2number|current|error)$/x;
+        carp "Including unknown parameter \"$key\" with query";
+        push @query, $key => $value;
+    }
+
+    $given->{query} = _inflate_query \@query, $query if @query;
     return $given;
 }
 
@@ -252,6 +275,8 @@ has version => qw/ is ro lazy_build 1 isa Str /;
 sub _build_version { '1.0' }
 sub v { return shift->version( @_ ) }
 
+has hl => qw/ is rw predicate has_hl /;
+
 has referer => qw/ is ro isa Str /;
 sub referrer { return shift->referer( @_ ) }
 
@@ -281,6 +306,13 @@ has error => qw/ is rw /;
 
 sub request {
     my $self = shift;
+    my $http_request = $self->build( @_ );
+    return unless my $http_response = $self->agent->request( $http_request );
+    return Google::Search::Response->new( http_response => $http_response );
+}
+
+sub build {
+    my $self = shift;
 
     my ( @query_form, @header_supplement );
 
@@ -293,20 +325,24 @@ sub request {
     }
 
     my $query = $self->query;
-    if (ref $query eq "HASH") {
-        # TODO Check for query instead of q?
-        push @query_form, %$query;
-    }
-    else {
-        push @query_form, q => $query;
-    }
+    # TODO Check for query instead of q?
+    push @query_form, @{ _inflate_query $query };
+    push @query_form, hl => $self->hl if $self->has_hl;
 
     my $uri = $self->uri->clone;
     $uri->query_form({ v => $self->version, rsz => $self->rsz, @query_form, @_ });
 
-    return unless my $http_response = $self->agent->get( $uri, @header_supplement );
+    if ( $ENV{GS_TRACE} ) {
+        warn $uri->as_string, "\n";
+    }
 
-    return Google::Search::Response->new( http_response => $http_response );
+    my $request = HTTP::Request::Common::GET( $uri => @header_supplement );
+
+    if ( $ENV{GS_TRACE} && $request ) {
+        warn $request->as_string, "\n";
+    }
+
+    return $request;
 }
 
 sub page {

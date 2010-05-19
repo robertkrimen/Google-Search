@@ -1,5 +1,3 @@
-#!/usr/bin/perl -w
-
 use strict;
 use warnings;
 
@@ -47,7 +45,7 @@ SKIP: {
     is( $search->first->rank, 0 );
     is( $search->result( 59 )->rank, 59 );
 
-    ok( !$search->result( 64  ) );
+    ok( !$search->result( 64 ) );
     my $error = $search->error;
     ok( $error );
     is( $error->code, 400 );
