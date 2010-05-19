@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use Dzpl
     name => 'Google-Search',
-    version => '0.025',
+    version => '0.026',
     author => 'Robert Krimen <robertkrimen@gmail.com>',
     license => 'Perl5',
     copyright => 'Robert Krimen',
@@ -19,15 +19,4 @@ use Dzpl
     /;
 ;
 
-#prune { m{^README[^/]*$} };
-
-plugin
-    '@Basic' => qr/Readme$/,
-    'PkgVersion',
-    'PodWeaver',
-    'ReadmeFromPod',
-    '=Dist::Dzpl::Plugin::DynamicManifest',
-    '=Dist::Dzpl::Plugin::CopyReadmeFromBuild',
-;
-
-run;
+{ plugin '@ROKR' }

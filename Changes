@@ -1,3 +1,8 @@
+0.026 Tuesday May 18 18:41:04 PDT 20102:
+    - Smarter parameter handling
+    - Include arbritrary parameters passed to constructor (with warning)
+    - Handle 'hl' parameter
+
 0.025 Friday April 30 16:48:46 PDT 2010:
     - Added ->suggest
 
