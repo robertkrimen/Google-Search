@@ -10,7 +10,7 @@ use Google::Search;
 my $result;
 sub result (@) {
     my $service = shift;
-    my $search = Google::Search->new( service => $service, query => 'rock', @_ );
+    my $search = Google::Search->new( service => $service, query => 'metal', @_ );
     my $result = $search->first;
     die "Error searching in $service: ", $search->error->message unless $result;
     return $result;
@@ -40,7 +40,7 @@ SKIP: {
         ok_diag( result( $_ )->title );
     }
 
-    ok_attr( result( 'local' ), qw/ lat lng streetAddress / );
+    ok_attr( result( 'local' ), qw/ lat lng streetAddress phoneNumbers addressLines / );
     ok_attr( result( 'video' ), qw/ published publisher / );
     ok_attr( result( 'blog' ), qw/ blogUrl author / );
     ok_attr( result( 'news' ), qw/ publisher publishedDate / );

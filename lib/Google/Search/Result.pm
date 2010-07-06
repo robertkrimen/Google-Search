@@ -145,6 +145,8 @@ streetAddress
 city
 region
 country
+phoneNumbers
+addressLines
 /;
 
 $field->( name => $_, uri => 1 ) for qw/
