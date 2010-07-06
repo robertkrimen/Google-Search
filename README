@@ -3,7 +3,7 @@ NAME
     API
 
 VERSION
-    version 0.026
+    version 0.027
 
 SYNOPSIS
         my $search = Google::Search->Web( query => "rock" );
