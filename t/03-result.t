@@ -46,7 +46,7 @@ SKIP: {
     ok_attr( result( 'news' ), qw/ publisher publishedDate / );
     ok_attr( result( 'book' ), qw/ publishedYear authors / );
     ok_attr( result( 'image' ), qw/ width height / );
-    ok_attr( result( 'patent' ), qw/ assignee applicationDate patentNumber patentStatus / );
+    ok_attr( result( 'patent' ), qw/ applicationDate patentNumber patentStatus / );
 }
 
 1;
