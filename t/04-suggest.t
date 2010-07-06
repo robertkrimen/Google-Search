@@ -7,7 +7,7 @@ plan 'no_plan';
 use Google::Search;
 
 SKIP: {
-    skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
+    skip 'Do RELEASE_TESTING=1 to go out to Google and run some tests' unless $ENV{RELEASE_TESTING};
 
     my( $data, $result );
 

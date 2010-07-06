@@ -51,7 +51,7 @@ like( $request->uri, qr{^http://ajax\.googleapis\.com/ajax/services/search/web\?
 cmp_deeply( { $request->uri->query_form }, { q => 'rock', v => '1.0', rsz => 'large', unknown => 'de' } );
 
 SKIP: {
-    skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
+    skip 'Do RELEASE_TESTING=1 to go out to Google and run some tests' unless $ENV{RELEASE_TESTING};
     my $search = Google::Search->Web( referer => $referer, key => $key, q => { q => 'rock' } );
     ok( $search );
     ok( $search->first ) || diag $search->error->http_response->as_string;

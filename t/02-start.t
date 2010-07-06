@@ -14,7 +14,7 @@ my $key = "ABQIAAAAtDqLrYRkXZ61bOjIaaXZyxQRY_BHZpnLMrZfJ9KcaAuQJCJzjxRJoUJ6qIwpB
 my $search;
 
 SKIP: {
-    skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
+    skip 'Do RELEASE_TESTING=1 to go out to Google and run some tests' unless $ENV{RELEASE_TESTING};
     my $s0 = Google::Search->Web( start => 0, q => { q => 'rock' } );
     my $s11 = Google::Search->Web( start => 11, q => { q => 'rock' } );
     diag( $s0->result( 11 )->uri );

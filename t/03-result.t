@@ -33,7 +33,7 @@ sub ok_attr (@) {
 }
 
 SKIP: {
-    skip 'Do TEST_RELEASE=1 to go out to Google and run some tests' unless $ENV{TEST_RELEASE};
+    skip 'Do RELEASE_TESTING=1 to go out to Google and run some tests' unless $ENV{RELEASE_TESTING};
 
     for ( qw/ web local video blog blogs
             news book books image images patent patents / ) {
