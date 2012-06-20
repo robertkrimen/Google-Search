@@ -1,11 +1,12 @@
 package Google::Search;
-# ABSTRACT: Interface to the Google AJAX Search API and suggestion API
-
+# ABSTRACT: Interface to the Google AJAX Search API and suggestion API (DEPRECATED)
 
 use warnings;
 use strict;
 
 =head1 SYNOPSIS
+
+NOTE: The Google AJAX Search API has been deprecated: L<http://developers.google.com/web-search/docs/>
 
     my $search = Google::Search->Web( query => "rock" );
     while ( my $result = $search->next ) {
@@ -50,6 +51,8 @@ Get suggestions from the unofficial Google suggestion API using C<suggest>
     my $suggestions = Google::Search->suggest( $term )
 
 =head1 DESCRIPTION
+
+NOTE: The Google AJAX Search API has been deprecated: L<http://developers.google.com/web-search/docs/>
 
 Google::Search is an interface to the Google AJAX Search API (L<http://code.google.com/apis/ajaxsearch/>). 
 

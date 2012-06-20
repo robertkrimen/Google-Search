@@ -1,3 +1,6 @@
+0.028 Wednesday June 20 12:28:36 PDT 2012:
+    - Deprecation notice
+
 0.027 Monday July 05 19:13:13 PDT 2010:
     - Include "phoneNumbers" "addressLines" with Result::Local (thanks Chris Thompson)
 
