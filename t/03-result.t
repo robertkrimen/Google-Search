@@ -33,6 +33,7 @@ sub ok_attr (@) {
 }
 
 SKIP: {
+    skip "Skip going out to Google because of deprecation";
     skip 'Do RELEASE_TESTING=1 to go out to Google and run some tests' unless $ENV{RELEASE_TESTING};
 
     for ( qw/ web local video blog blogs

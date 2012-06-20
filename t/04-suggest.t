@@ -7,6 +7,7 @@ plan 'no_plan';
 use Google::Search;
 
 SKIP: {
+    skip "Skip going out to Google because of deprecation";
     skip 'Do RELEASE_TESTING=1 to go out to Google and run some tests' unless $ENV{RELEASE_TESTING};
 
     my( $data, $result );
