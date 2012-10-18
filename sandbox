@@ -1,0 +1,14 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use Google::Search;
+
+my $search = Google::Search->Web( query => "rock" );
+while ( my $result = $search->next ) {
+    print $result->rank, " ", $result->uri, "\n";
+    print $result->content, "\n";
+}
+
+
